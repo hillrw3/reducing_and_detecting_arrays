@@ -1,96 +1,64 @@
 class Students
   def all
     [
-        {name: "Bob", age: 10},
-        {name: "Sue", age: 10},
-        {name: "Greg", age: 15},
-        {name: "Amanda", age: 8},
-        {name: "Steve", age: 22},
+      {name: "Bob", age: 10},
+      {name: "Sue", age: 10},
+      {name: "Greg", age: 15},
+      {name: "Amanda", age: 8},
+      {name: "Steve", age: 22},
     ]
   end
 
-  def average_age
-    # all.inject(0) { |sum_of_ages, student| sum_of_ages + student[:age] } / all.length
-    all.reduce(0) { |sum_of_ages, student| sum_of_ages + student[:age] } / all.length
+  def all_ages
+    ages_array = []
+    all.each do |student|
+      ages_array << student[:age]
+    end
+    ages_array
+  end
 
-    # sum_of_ages = 0
-    # all.each do |student|
-    #   sum_of_ages = sum_of_ages + student[:age]
-    # end
-    #
-    # sum_of_ages/all.length
+  def average_age
+    all_ages.inject(:+)/all_ages.length
   end
 
   def name_string
-    all.reduce("") { |accumulator, student| accumulator + student[:name] + " " }.strip
-    # all.map { |student| student[:name] }.join(' ')
+    names = []
+    all.each do |student|
+      names << student[:name]
+    end
+    names.join(' ')
   end
 
   def find_first_older_than(age)
-    # all.each do |student|
-    #   if student[:age] > age
-    #     return student
-    #   end
-    # end
-
-    all.detect { |student| student[:age] > age }
+    all.each do |student|
+      return student if student[:age] > age
+    end
   end
 
   def any_older_than?(age)
-    all.any? { |student| student[:age] > age }
-
-    # all.each do |student|
-    #   if student[:age] > age
-    #     return true
-    #   end
-    # end
-    # false
+    all_ages.any? {|x| x > age }
   end
 
-  def find_student(student_to_find)
-    all.detect { |student| student == student_to_find }
-
-    # all.each do |student|
-    #   if student == student_to_find
-    #     return student
-    #   end
-    # end
-    # nil
+  def find_student(hash)
+    all.select do |student|
+      if student[:name] == hash[:name] && student[:age] == hash[:age]
+        return student
+      end
+    end
+    return nil if all == []
   end
 
-  def student_present?(student_to_find)
-    all.include?(student_to_find)
-
-    # all.each do |student|
-    #   if student == student_to_find
-    #     return true
-    #   end
-    # end
-    # false
+  def student_present?(hash)
+    all.include?(hash)
   end
 
   def grouped_by_age
-    # This is a little less clear and
-    # may be an anti-pattern depending
-    # on who you talk to
-    all.inject({}) do |acc, student|
-      if  acc[student[:age]] == nil
-        acc[student[:age]] = []
+    grouped_hash = all.group_by {|student| student[:age]}
+    group = {}
+      grouped_hash.each do |key, value|
+        group[key] = value.map {|student| student[:name]}
       end
-      acc[student[:age]] << student[:name]
-      acc
-    end
-
-    # I (MikeG) prefers this solution because it
-    # is a bit more clear in my head
-    # acc = {}
-    #
-    # all.each do |student|
-    #   if  acc[student[:age]] == nil
-    #     acc[student[:age]] = []
-    #   end
-    #   acc[student[:age]] << student[:name]
-    # end
-    # acc
+    group
   end
+
 end
