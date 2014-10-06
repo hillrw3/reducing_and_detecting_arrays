@@ -39,13 +39,9 @@ class Students
     all_ages.any? {|x| x > age }
   end
 
+
   def find_student(hash)
-    all.select do |student|
-      if student[:name] == hash[:name] && student[:age] == hash[:age]
-        return student
-      end
-    end
-    return nil if all == []
+    all.find {|student| student == hash}
   end
 
   def student_present?(hash)
@@ -54,11 +50,11 @@ class Students
 
   def grouped_by_age
     grouped_hash = all.group_by {|student| student[:age]}
-    group = {}
+    age_groups = {}
       grouped_hash.each do |key, value|
-        group[key] = value.map {|student| student[:name]}
+        age_groups[key] = value.map {|student| student[:name]}
       end
-    group
+    age_groups
   end
 
 end
